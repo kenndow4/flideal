@@ -16,8 +16,10 @@ export function RegisterForm() {
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [error, setError] = useState("")
   const [isLoading, setLoading] = useState(false)
+   const router = useRouter()
 
- const handleSubmit = async () => {
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
     setError("");
 
     if (!name || !email || !password) {
@@ -34,18 +36,19 @@ export function RegisterForm() {
       setLoading(true);
 
       const result = await register({ name, email, password });
+      console.log(result)
 
       if (!result.ok) {
         setError(result.message);
         return;
       }
-      console.log(result)
 
       await signIn("credentials", {
         email,
         password,
-        // callbackUrl: "/dashboard",
+        redirect: false,
       });
+      router.push("/");
     } finally {
       setLoading(false);
     }
